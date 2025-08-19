@@ -1,0 +1,59 @@
+# -----------------------------
+# Vagrant
+# -----------------------------
+.vagrant/
+*.box
+Vagrantfile.local
+
+# -----------------------------
+# SSH keys
+# -----------------------------
+*.pem
+*.key
+*.pub
+~/.ssh/*
+
+# -----------------------------
+# Ansible
+# -----------------------------
+# Vault files
+*.vault.yml
+
+# Cache & facts
+*.retry
+*.retry.json
+*.retry.yml
+.fact_cache/
+
+# Roles & collections installés automatiquement
+roles/
+collections/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs
+*.log
+
+# -----------------------------
+# OS / IDE
+# -----------------------------
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+
+# -----------------------------
+# Temp / backup
+# -----------------------------
+*.swp
+*.bak
+*.tmp
+*.old
+
+# -----------------------------
+# Misc
+# -----------------------------
+*.env

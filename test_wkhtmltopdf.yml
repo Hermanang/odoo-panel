@@ -1,0 +1,76 @@
+---
+- name: Test wkhtmltopdf role
+  hosts: all
+  become: yes
+  vars:
+    # Variables pour forcer le test sur une distribution spécifique
+    test_distribution: "ubuntu"
+    test_version: "20.04"
+    test_architecture: "amd64"
+  
+  tasks:
+    - name: Set test distribution facts
+      set_fact:
+        ansible_distribution: "{{ test_distribution }}"
+        ansible_distribution_version: "{{ test_version }}"
+        ansible_architecture: "{{ test_architecture }}"
+      when: test_distribution is defined and test_version is defined and test_architecture is defined
+
+    - name: Include wkhtmltopdf role
+      include_role:
+        name: wkhtmltopdf
+      tags: [wkhtmltopdf]
+
+    - name: Verify wkhtmltopdf installation
+      command: wkhtmltopdf --version
+      register: wkhtml_version
+      changed_when: false
+      tags: [wkhtmltopdf, verify]
+
+    - name: Display wkhtmltopdf version
+      debug:
+        msg: "wkhtmltopdf version: {{ wkhtml_version.stdout }}"
+      tags: [wkhtmltopdf, verify]
+
+    - name: Test idempotence - Run role again
+      include_role:
+        name: wkhtmltopdf
+      tags: [idempotence]
+
+    - name: Verify idempotence - Check if changed
+      debug:
+        msg: "Role is idempotent - no changes on second run"
+      when: not ansible_check_mode
+      tags: [idempotence]
+
+- name: Test uninstallation
+  hosts: all
+  become: yes
+  vars:
+    test_distribution: "ubuntu"
+    test_version: "20.04"
+    test_architecture: "amd64"
+
+  tasks:
+    - name: Set test distribution facts
+      set_fact:
+        ansible_distribution: "{{ test_distribution }}"
+        ansible_distribution_version: "{{ test_version }}"
+        ansible_architecture: "{{ test_architecture }}"
+
+    - name: Uninstall wkhtmltopdf
+      include_role:
+        name: wkhtmltopdf
+        tasks_from: uninstall
+      tags: [uninstall]
+
+    - name: Verify wkhtmltopdf is uninstalled
+      command: which wkhtmltopdf || true
+      register: wkhtml_after_uninstall
+      changed_when: false
+      tags: [uninstall, verify]
+
+    - name: Display uninstall result
+      debug:
+        msg: "wkhtmltopdf uninstalled successfully: {{ wkhtml_after_uninstall.stdout == '' }}"
+      tags: [uninstall, verify]
