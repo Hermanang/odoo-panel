@@ -1,0 +1,4 @@
+---
+- name: verify wkhtmltopdf
+  command: wkhtmltopdf --version
+  listen: verify wkhtmltopdf

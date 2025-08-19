@@ -1,0 +1,9 @@
+---
+- name: Uninstall wkhtmltopdf
+  apt:
+    name: wkhtmltopdf
+    state: absent
+    purge: yes
+    autoremove: yes
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf, uninstall]

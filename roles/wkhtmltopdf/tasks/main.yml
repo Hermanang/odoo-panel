@@ -1,0 +1,82 @@
+---
+- name: Check if wkhtmltopdf is already installed
+  shell: dpkg -l | grep wkhtmltox || true
+  register: wkhtml_installed
+  changed_when: false
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]
+
+- name: Install wkhtmltopdf dependencies
+  apt:
+    name:
+      - libfontconfig1
+      - libjpeg-turbo8
+      - libpng16-16
+      - libx11-6
+      - libxcb1
+      - libxext6
+      - libxrender1
+      - xfonts-75dpi
+      - xfonts-base
+    state: present
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]
+
+- name: Set wkhtmltopdf download URL based on distribution and architecture
+  set_fact:
+    wkhtml_download_url_deb: "{{
+      wkhtml_download_urls[ansible_distribution | lower][ansible_distribution_version][ansible_architecture]
+    }}"
+  when: 
+    - ansible_os_family == 'Debian'
+    - ansible_distribution | lower in ['debian', 'ubuntu']
+    - ansible_distribution_version in wkhtml_download_urls[ansible_distribution | lower]
+    - ansible_architecture in wkhtml_download_urls[ansible_distribution | lower][ansible_distribution_version]
+  tags: [wkhtmltopdf]
+
+- name: Fail if no suitable wkhtmltopdf package found for Debian/Ubuntu
+  fail:
+    msg: "No wkhtmltopdf package available for {{ ansible_distribution }} {{ ansible_distribution_version }} on {{ ansible_architecture }} architecture. Supported combinations: {{ wkhtml_download_urls[ansible_distribution | lower].keys() | list }}"
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_distribution | lower in ['debian', 'ubuntu']
+    - not (ansible_distribution_version in wkhtml_download_urls[ansible_distribution | lower] and ansible_architecture in wkhtml_download_urls[ansible_distribution | lower][ansible_distribution_version])
+  tags: [wkhtmltopdf]
+
+- name: Uninstall any existing wkhtmltopdf version
+  apt:
+    name: wkhtmltopdf
+    state: absent
+    purge: yes
+    autoremove: yes
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]
+
+- name: Download wkhtmltopdf .deb
+  get_url:
+    url: "{{ wkhtml_download_url_deb }}"
+    dest: "/tmp/wkhtmltox.deb"
+    mode: '0644'
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]
+
+- name: Install wkhtmltopdf on Debian/Ubuntu
+  apt:
+    deb: "/tmp/wkhtmltox.deb"
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]
+  notify: [verify wkhtmltopdf]
+
+- name: Clean up downloaded .deb file
+  file:
+    path: "/tmp/wkhtmltox.deb"
+    state: absent
+  when: ansible_os_family == 'Debian'
+  tags: [wkhtmltopdf]

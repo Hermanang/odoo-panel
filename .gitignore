@@ -26,8 +26,6 @@ Vagrantfile.local
 .fact_cache/
 
 # Roles & collections installés automatiquement
-roles/
-collections/
 __pycache__/
 *.pyc
 *.pyo
