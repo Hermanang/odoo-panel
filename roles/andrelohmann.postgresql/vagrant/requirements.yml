@@ -1,0 +1,9 @@
+---
+
+roles:
+- name: andrelohmann.root_colored_prompt
+
+collections:
+- name: community.postgresql
+
+...

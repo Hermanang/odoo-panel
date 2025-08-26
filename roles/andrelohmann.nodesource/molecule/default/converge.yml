@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  vars:
+    nodesource_nodejs_version: '22'
+  tasks:
+  - name: Include andrelohmann.nodesource
+    ansible.builtin.include_role:
+      name: "andrelohmann.nodesource"
+...

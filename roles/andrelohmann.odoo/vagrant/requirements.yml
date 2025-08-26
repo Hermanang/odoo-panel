@@ -1,0 +1,14 @@
+---
+
+roles:
+- name: andrelohmann.root_colored_prompt
+- name: andrelohmann.mailpit
+- name: andrelohmann.postgresql
+- name: andrelohmann.nodesource
+- name: andrelohmann.wkhtmltopdf
+
+collections:
+- name: community.general
+- name: community.postgresql
+
+...

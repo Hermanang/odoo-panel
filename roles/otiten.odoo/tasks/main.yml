@@ -1,0 +1,70 @@
+---
+# - name: Update APT cache
+#   apt:
+#     update_cache: true
+  
+# - name: Install dependencies
+#   apt:
+#     name: ['curl', 'gpg', 'ca-certificates']
+#     state: present
+#   when: ansible_os_family == 'Debian'
+
+- name: Add Odoo GPG key
+  shell: |
+    set -o pipefail
+    curl https://nightly.odoo.com/odoo.key |
+    gpg --dearmor -o /usr/share/keyrings/odoo-archive-keyring.gpg
+  args:
+    creates: '/usr/share/keyrings/odoo-archive-keyring.gpg'
+    executable: '/bin/bash'
+  when: ansible_os_family == 'Debian'
+
+- name: Add Odoo GPG key (Debian/Ubuntu)
+  shell: |
+    set -o pipefail
+    curl -fsSL https://nightly.odoo.com/odoo.key | gpg --dearmor -o /usr/share/keyrings/odoo-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/odoo-archive-keyring.gpg
+    executable: /bin/bash
+  when: ansible_os_family == 'Debian'
+
+- name: Verify GPG key fingerprint
+  shell: |
+    set -o pipefail
+    gpg --show-keys --with-fingerprint --with-colons /usr/share/keyrings/odoo-archive-keyring.gpg 2>/dev/null | grep -m 1 fpr | awk -F: '{print $10}'
+  args:
+    executable: '/bin/bash'
+  register: odoo_key_fingerprint
+  changed_when: false
+  failed_when: not odoo_key_fingerprint.stdout.strip().endswith('DEF2A2198183CBB5')
+  when: ansible_os_family == 'Debian'
+
+- name: Add Odoo APT repository (Debian/Ubuntu)
+  template:
+    src: templates/odoo.list.j2
+    dest: /etc/apt/sources.list.d/odoo.list
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == 'Debian'
+
+- name: Update APT cache
+  apt:
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+
+- name: Add Odoo DNF repository (Fedora/RedHat)
+  yum_repository:
+    name: odoo-nightly
+    description: Odoo Nightly {{ odoo_version }}
+    baseurl: "{{ odoo_repo_base_url }}/{{ odoo_repo_channel }}/rpm/"
+    gpgcheck: no
+    enabled: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: Install Odoo
+  apt:
+    name: ['odoo', 'python3-xlwt']
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'Debian'

@@ -1,0 +1,9 @@
+---
+postgresql_version: 17
+postgresql_listen: "localhost"
+postgresql_clients_only: false
+postgresql_additional_packages: []
+postgresql_databases: []
+postgresql_users: []
+postgresql_schemas: []
+...

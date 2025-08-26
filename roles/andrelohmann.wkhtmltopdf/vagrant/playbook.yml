@@ -1,0 +1,13 @@
+---
+- name: Install
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+
+  vars:
+    wkhtmltopdf_install_google_fonts: true
+
+  roles:
+  - name: andrelohmann.root_colored_prompt
+  - name: ansible-role-wkhtmltopdf
+...

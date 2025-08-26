@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: nodesource
+  author: andrelohmann
+  description: ansible galaxy role to install nodejs from nodesource
+  company: CloudSails GmbH
+
+  license: MIT
+
+  min_ansible_version: "2.11"
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - jammy
+    - noble
+
+  galaxy_tags:
+  - nodejs
+
+dependencies: []
+...

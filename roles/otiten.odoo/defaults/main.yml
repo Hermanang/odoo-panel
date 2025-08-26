@@ -1,0 +1,5 @@
+---
+odoo_version: "17.0"
+odoo_repo_key_url: "https://nightly.odoo.com/odoo.key"
+odoo_repo_base_url: "https://nightly.odoo.com"
+odoo_repo_channel: "{{ odoo_version }}/nightly"

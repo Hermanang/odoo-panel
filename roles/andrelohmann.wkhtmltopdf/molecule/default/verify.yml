@@ -1,0 +1,27 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: Run wkhtmltopdf
+    ansible.builtin.shell: wkhtmltopdf http://google.com /tmp/google.pdf
+    args:
+      executable: /bin/bash
+      creates: /tmp/google.pdf
+
+  - name: Chek for the existence of /tmp/google.pdf
+    ansible.builtin.stat:
+      path: '/tmp/google.pdf'
+    register: pdf_document
+
+  - name: Dump pdf_document
+    ansible.builtin.debug:
+      var: pdf_document
+
+  - name: Assert pdf_document is readable
+    ansible.builtin.assert:
+      that: pdf_document.stat.readable
+...

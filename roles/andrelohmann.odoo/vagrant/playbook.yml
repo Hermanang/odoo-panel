@@ -1,16 +1,8 @@
 ---
-
-# ansible-playbook -K -D -i inventory/hosts.yml playbook.yml
-
-- name: Odoo
-  hosts: jammy   # should be limited
-  gather_facts: yes
-  become: yes
-  roles:
-    # - wkhtmltopdf
-    - andrelohmann.postgresql
-    - andrelohmann.odoo
-
+- name: Install
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
 
   vars:
     mailpit_proxy_nginx: true
@@ -126,5 +118,12 @@
     - database: odoo_test
       language: de_DE
 
-...
+  roles:
+  - name: andrelohmann.root_colored_prompt
+  - name: andrelohmann.mailpit
+  - name: andrelohmann.postgresql
+  - name: andrelohmann.nodesource
+  - name: andrelohmann.wkhtmltopdf
+  - name: ansible-role-odoo
 
+...
