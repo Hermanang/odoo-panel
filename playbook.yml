@@ -6,6 +6,8 @@
   hosts: jammy   # should be limited
   # gather_facts: false
   become: false
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   roles:
     # - wkhtmltopdf
     - andrelohmann.postgresql
