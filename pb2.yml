@@ -1,0 +1,13 @@
+- hosts: jammy
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Qui suis-je et où suis-je ?
+      shell: |
+        whoami
+        hostname -f || hostname
+        ip -4 addr | awk '/inet /{print $2}'
+        cat /etc/os-release || true
+        command -v apt-get || echo "apt-get NOT FOUND"
+      register: out
+    - debug: var=out.stdout_lines
