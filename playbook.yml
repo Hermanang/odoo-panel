@@ -4,8 +4,8 @@
 
 - name: Odoo
   hosts: jammy   # should be limited
-  # gather_facts: yes
-  become: yes
+  # gather_facts: false
+  become: false
   roles:
     # - wkhtmltopdf
     - andrelohmann.postgresql
