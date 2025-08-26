@@ -1,0 +1,11 @@
+- hosts: jammy
+  gather_facts: false
+  # become: yes
+  vars:
+    ansible_become_exe: /usr/bin/sudo
+  tasks:
+    - shell: |
+        whoami
+        echo "PATH=$PATH"
+        command -v apt-get || echo "apt-get NOT FOUND"
+    - debug: var=ansible_env
