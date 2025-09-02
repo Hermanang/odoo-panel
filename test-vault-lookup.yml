@@ -3,6 +3,15 @@
   hosts: all
   gather_facts: no
 
+  # On résout db_password / db_host AVANT les tasks
+  vars:
+    db_password: >-
+      {{ lookup('community.hashi_vault.hashi_vault',
+                'secret/data/myapp db_password') }}
+    db_host: >-
+      {{ lookup('community.hashi_vault.hashi_vault',
+                'secret/data/myapp db_host') }}
+
   tasks:
     - name: Vérifier si la variable db_password est définie
       ansible.builtin.debug:
@@ -11,4 +20,3 @@
     - name: Vérifier si d'autres variables sont injectées
       ansible.builtin.debug:
         msg: "db_host = {{ db_host | default('NON DISPONIBLE') }}"
-
