@@ -1,0 +1,14 @@
+---
+- name: Test HashiCorp Vault variables from AWX
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Vérifier si la variable db_password est définie
+      ansible.builtin.debug:
+        msg: "db_password = {{ db_password | default('NON DISPONIBLE') }}"
+
+    - name: Vérifier si d'autres variables sont injectées
+      ansible.builtin.debug:
+        msg: "db_host = {{ db_host | default('NON DISPONIBLE') }}"
+
