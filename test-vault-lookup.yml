@@ -5,11 +5,9 @@
 
   vars:
     db_password: >-
-      {{ lookup('community.hashi_vault.hashi_vault',
-                'secret=secret/data/postgres field=db_password') }}
+      {{ lookup('hashi_vault', 'secret=secret/data/postgres') }}
     db_host: >-
-      {{ lookup('community.hashi_vault.hashi_vault',
-                'secret=secret/data/postgres field=db_host') }}
+      {{ lookup('chashi_vault', 'secret=secret/data/postgres ') }}
 
   tasks:
     - name: Vérifier si la variable db_password est définie
