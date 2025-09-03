@@ -3,14 +3,13 @@
   hosts: all
   gather_facts: no
 
-  # On résout db_password / db_host AVANT les tasks
   vars:
     db_password: >-
       {{ lookup('community.hashi_vault.hashi_vault',
-                'secret/data/myapp db_password') }}
+                'secret=secret/data/postgres field=db_password') }}
     db_host: >-
       {{ lookup('community.hashi_vault.hashi_vault',
-                'secret/data/myapp db_host') }}
+                'secret=secret/data/postgres field=db_host') }}
 
   tasks:
     - name: Vérifier si la variable db_password est définie
